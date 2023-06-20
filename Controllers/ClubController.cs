@@ -24,5 +24,20 @@ namespace ASP.NET_MVC.Controllers
             Club club = await clubService.GetByIdAsync(id);
             return View(club);
         }
+
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(Club club)
+        {
+            if (!ModelState.IsValid)
+                return View(club);
+
+            clubService.Add(club);
+            return RedirectToAction("Index");
+        }
     }
 }
