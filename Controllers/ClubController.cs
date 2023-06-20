@@ -1,31 +1,27 @@
-﻿using ASP.NET_MVC.Data;
+﻿using ASP.NET_MVC.Interfaces;
 using ASP.NET_MVC.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ASP.NET_MVC.Controllers
 {
     public class ClubController : Controller
     {
-        private readonly ApplicationDbContext context;
+        private readonly IClubService clubService;
 
-        public ClubController(ApplicationDbContext context)
+        public ClubController(IClubService clubService)
         {
-            this.context = context;
+            this.clubService = clubService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var clubs = context.Clubs.ToList();
+            var clubs = await clubService.GetAllAsync();
             return View(clubs);
         }
 
-        public IActionResult Detail(int id)
+        public async Task<IActionResult> Detail(int id)
         {
-            Club club = context
-                        .Clubs
-                        .Include(c => c.Address)
-                        .FirstOrDefault(c => c.Id == id);
+            Club club = await clubService.GetByIdAsync(id);
             return View(club);
         }
     }

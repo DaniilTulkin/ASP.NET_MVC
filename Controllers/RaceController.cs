@@ -1,31 +1,27 @@
-﻿using ASP.NET_MVC.Data;
+﻿using ASP.NET_MVC.Interfaces;
 using ASP.NET_MVC.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ASP.NET_MVC.Controllers
 {
     public class RaceController : Controller
     {
-        private readonly ApplicationDbContext context;
+        private readonly IRaceService raceService;
 
-        public RaceController(ApplicationDbContext context)
+        public RaceController(IRaceService raceService)
         {
-            this.context = context;
+            this.raceService = raceService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var races = context.Races.ToList();
+            var races = await raceService.GetAllAsync();
             return View(races);
         }
 
-        public IActionResult Detail(int id)
+        public async Task<IActionResult> Detail(int id)
         {
-            Race race = context
-                        .Races
-                        .Include(c => c.Address)
-                        .FirstOrDefault(c => c.Id == id);
+            Race race = await raceService.GetByIdAsync(id);
             return View(race);
         }
     }
