@@ -1,5 +1,7 @@
 ﻿using ASP.NET_MVC.Data;
+using ASP.NET_MVC.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ASP.NET_MVC.Controllers
 {
@@ -16,6 +18,15 @@ namespace ASP.NET_MVC.Controllers
         {
             var races = context.Races.ToList();
             return View(races);
+        }
+
+        public IActionResult Detail(int id)
+        {
+            Race race = context
+                        .Races
+                        .Include(c => c.Address)
+                        .FirstOrDefault(c => c.Id == id);
+            return View(race);
         }
     }
 }
